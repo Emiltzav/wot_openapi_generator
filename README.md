@@ -1,5 +1,7 @@
 # wot_openapi_generator
 
+A service in Python Flask for the generation of WoT OpenAPI service descriptions for specific IoT devices (e.g. sensors, actuators). It runs in Docker environment. 
+
 # Prerequisites
 
 Install Docker and docker-compose. 
