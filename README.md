@@ -1,0 +1,1 @@
+# wot_openapi_generator
