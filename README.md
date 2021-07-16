@@ -1,6 +1,10 @@
 # wot_openapi_generator
 
-HOW TO DEPLOY IT:
+# Prerequisites
+
+Install Docker and docker-compose. 
+
+# How to deploy it
 
 Inside the repository run:
 
