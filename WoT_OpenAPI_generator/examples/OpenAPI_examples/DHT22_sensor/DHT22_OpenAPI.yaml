@@ -1,0 +1,507 @@
+openapi: 3.0.3
+info:
+  title: Web Thing Model API for DHT22 sensor
+  description: |
+    This is a Web Thing Model server.  You can find
+    out more about Web Thing Model (W3C) at
+    [https://www.w3.org/Submission/wot-model/](https://www.w3.org/Submission/wot-model/).
+  contact:
+    email: atzavaras@intelligence.tuc.gr
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Web Thing Model
+  url: 'https://www.w3.org/Submission/wot-model/'
+servers:
+  - url: 'http://localhost:5000/DHT22'
+    description: SwaggerHub API Auto Mocking
+tags:
+  - name: Web Thing
+    x-onResource: '''#/components/schemas/Webthing'''
+    description: Operations on a Web Thing
+    externalDocs:
+      description: Find out more
+      url: 'https://www.w3.org/Submission/wot-model/#web-thing-resource'
+  - name: Properties
+    description: Operations on Thing Properties
+    externalDocs:
+      description: Find out more about Thing properties
+      url: 'https://www.w3.org/Submission/wot-model/#properties-resource'
+  - name: Subscriptions
+    x-onResource: '''#/components/schemas/SubscriptionObject'''
+    description: Operations on subscriptions
+    externalDocs:
+      description: Find out more about Thing subscriptions
+      url: 'https://www.w3.org/Submission/wot-model/#subscriptions-resource'
+paths:
+  /:
+    get:
+      tags:
+        - Web Thing
+      summary: Retrieve Web Thing
+      description: 'In response to an HTTP GET request on the root URL of a Thing, an Extended Web Thing must return an object that holds its representation.'
+      operationId: retrieveWebThing
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webthing'
+        '404':
+          description: Not found
+  /properties:
+    get:
+      tags:
+        - Properties
+      summary: Retrieve a list of properties
+      description: 'In response to an HTTP GET request on the destination URL of a properties link, an Extended Web Thing must return an array of Property that the initial resource contains.'
+      operationId: retrieveWebThingProperties
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PropertiesResponse'
+        '404':
+          description: Not found
+  /properties/temperature:
+    get:
+      tags:
+        - Properties
+      summary: Retrieve the value of a property (temperature)
+      description: 'In response to an HTTP GET request on a Property URL, an Extended Web Thing must return an array that lists recent values of that Property.'
+      operationId: retrieveTempProperty
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - name: perPage
+          description: Pagination second (per page) parameter
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            Result-Count:
+              schema:
+                type: integer
+                example: 562
+              description: The Result-Count header contains the total number of results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TempMeasurement'
+        '404':
+          description: Not found
+  /properties/humidity:
+    get:
+      tags:
+        - Properties
+      summary: Retrieve the value of a property (humidity)
+      description: 'In response to an HTTP GET request on a Property URL, an Extended Web Thing must return an array that lists recent values of that Property.'
+      operationId: retrieveHumidProperty
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - name: perPage
+          description: Pagination second (per page) parameter
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            Result-Count:
+              schema:
+                type: integer
+                example: 562
+              description: The Result-Count header contains the total number of results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HMeasurement'
+        '404':
+          description: Not found
+  /subscriptions:
+    get:
+      tags:
+        - Subscriptions
+      summary: Retrieve a list of subscriptions
+      description: 'In response to an HTTP GET request on the destination URL of a subscriptions link, an Extended Web Thing must return the array of subscriptions to the underlying resource.'
+      operationId: retrieveListOfSubscriptions
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - name: perPage
+          description: Pagination second (per page) parameter
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          headers:
+            Result-Count:
+              schema:
+                type: integer
+                example: 562
+              description: The Result-Count header contains the total number of results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubscriptionObject'
+        '404':
+          description: Not found
+    post:
+      tags:
+        - Subscriptions
+      summary: Create a subscription
+      description: An Extended Web Thing should support subscriptions for the specific resource (DHT22).
+      operationId: createSubscription
+      x-operationType: 'https://schema.org/CreateAction'
+      requestBody:
+        description: Create a new subscription
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequestBody'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not found
+  '/subscriptions/{subscriptionID}':
+    get:
+      tags:
+        - Subscriptions
+      summary: Retrieve information about a specific subscription
+      description: 'In response to an HTTP GET request on a Subscription URL, an Extended Web Thing must return a JSON representation of the subscription. The JSON representation should be the same as the one returned for that subscription in ''Retrieve a list of subscriptions''.'
+      operationId: retreiveInfoAboutSubscription
+      parameters:
+        - name: subscriptionID
+          in: path
+          description: The id of the specific subscription
+          required: true
+          style: simple
+          explode: true
+          schema:
+            x-mapsTo: '#/components/schemas/SubscriptionObject.id'
+            type: string
+            example: 5fd23faccde6be05da68bcfb
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionObject'
+        '404':
+          description: Not found
+    delete:
+      tags:
+        - Subscriptions
+      summary: Delete a subscription
+      description: In response to an HTTP DELETE request on the destination URL of a subscriptions an Extended Web Thing must either reject  the request with an appropriate status code or remove (unsubscribe) the subscription and return a 200 OK status code.
+      operationId: deleteSubscription
+      x-operationType: 'https://schema.org/DeleteAction'
+      parameters:
+        - name: subscriptionID
+          in: path
+          description: The id of the specific subscription
+          required: true
+          style: simple
+          explode: true
+          schema:
+            x-mapsTo: '#/components/schemas/SubscriptionObject.id'
+            type: string
+            example: 5fd23faccde6be05da68bcfb
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not found
+components:
+  schemas:
+    Webthing:
+      required:
+        - id
+        - name
+      type: object
+      x-refersTo: 'http://www.w3.org/ns/sosa/Sensor'
+      properties:
+        id:
+          type: string
+          default: DHT22
+          x-kindOf: 'http://schema.org/identifier'
+        name:
+          type: string
+          example: DHT22/AM2302
+          x-kindOf: 'http://schema.org/name'
+        description:
+          type: string
+          example: 'The DHT-22, also named as AM2302, is a digital-output relative humidity and temperature sensor. It uses a capacitive humidity sensor and a thermistor to measure the surrounding air, and spits out a digital signal on the data pin.'
+          x-refersTo: 'http://schema.org/description'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+            example: temperature sensor
+      xml:
+        name: Webthing
+    PropertiesResponse:
+      anyOf:
+        - $ref: '#/components/schemas/TempProperty'
+        - $ref: '#/components/schemas/HumProperty'
+      xml:
+        name: PropertiesResponse
+    TempMeasurement:
+      type: object
+      x-kindOf: 'http://www.w3.org/ns/sosa/Observation'
+      properties:
+        temp:
+          type: integer
+          example: 25
+          x-kindOf: 'http://www.w3.org/ns/sosa/hasSimpleResult'
+        timestamp:
+          type: string
+          format: date-time
+          x-kindOf: 'http://www.w3.org/ns/sosa/resultTime'
+    HMeasurement:
+      type: object
+      x-kindOf: 'http://www.w3.org/ns/sosa/Observation'
+      properties:
+        h:
+          type: integer
+          example: 21
+          x-kindOf: 'http://www.w3.org/ns/sosa/hasSimpleResult'
+        timestamp:
+          type: string
+          format: date-time
+          x-kindOf: 'http://www.w3.org/ns/sosa/resultTime'
+    TempProperty:
+      type: object
+      required:
+        - id
+        - values
+      x-kindOf: 'http://www.w3.org/ns/ssn/systems/SystemCapability'
+      properties:
+        id:
+          type: string
+          default: DHT22_temperature
+          x-kindOf: 'http://schema.org/identifier'
+        name:
+          type: string
+          example: Temperature
+          x-kindOf: 'http://schema.org/name'
+        values:
+          $ref: '#/components/schemas/TempMeasurement'
+        range:
+          type: object
+          x-kindOf: 'http://www.w3.org/ns/ssn/systems/Condition'
+          properties:
+            unit:
+              type: string
+              default: DegreeCelsius
+              x-refersTo: 'https://schema.org/unitText'
+            minValue:
+              type: number
+              format: float
+              default: -40
+              x-refersTo: 'https://schema.org/value'
+            maxValue:
+              type: number
+              format: float
+              default: 80
+              x-refersTo: 'https://schema.org/value'
+        sensorAccuracy:
+          type: object
+          x-refersTo: 'http://www.w3.org/ns/ssn/systems/Accuracy'
+          properties:
+            range:
+              type: object
+              x-kindOf: 'http://www.w3.org/ns/ssn/systems/Condition'
+              properties:
+                unit:
+                  type: string
+                  default: DegreeCelsius
+                  x-refersTo: 'https://schema.org/unitText'
+                minValue:
+                  type: number
+                  format: float
+                  default: -0.5
+                  x-refersTo: 'https://schema.org/value'
+                maxValue:
+                  type: number
+                  format: float
+                  default: 0.5
+                  x-refersTo: 'https://schema.org/value'
+        sensorSensitivity:
+          type: object
+          x-refersTo: 'http://www.w3.org/ns/ssn/systems/Sensitivity'
+          properties:
+            unit:
+              type: string
+              default: DegreeCelsius
+              x-refersTo: 'https://schema.org/unitText'
+            value:
+              type: number
+              format: float
+              default: 0.1
+              x-refersTo: 'https://schema.org/value'
+        sensorPrecision:
+          type: object
+          x-refersTo: 'http://www.w3.org/ns/ssn/systems/Precision'
+          properties:
+            range:
+              type: object
+              x-kindOf: 'http://www.w3.org/ns/ssn/systems/Condition'
+              properties:
+                unit:
+                  type: string
+                  default: DegreeCelsius
+                  x-refersTo: 'https://schema.org/unitText'
+                minValue:
+                  type: number
+                  format: float
+                  default: 0.2
+                  x-refersTo: 'https://schema.org/value'
+                maxValue:
+                  type: number
+                  format: float
+                  default: 0.2
+                  x-refersTo: 'https://schema.org/value'
+        sensorFrequency:
+          type: object
+          x-refersTo: 'http://www.w3.org/ns/ssn/systems/Frequency'
+          properties:
+            unit:
+              type: string
+              default: sec
+              x-refersTo: 'https://schema.org/unitText'
+            period:
+              type: integer
+              format: int32
+              default: 2
+              x-refersTo: 'https://schema.org/value'
+      xml:
+        name: TempProperty
+    HumProperty:
+      type: object
+      required:
+        - id
+        - values
+      x-kindOf: 'http://www.w3.org/ns/ssn/systems/SystemCapability'
+      properties:
+        id:
+          type: string
+          default: DHT22_humidity
+          x-kindOf: 'http://schema.org/identifier'
+        name:
+          type: string
+          example: Humidity
+          x-kindOf: 'http://schema.org/name'
+        values:
+          $ref: '#/components/schemas/HMeasurement'
+        range:
+          type: object
+          x-kindOf: 'http://www.w3.org/ns/ssn/systems/Condition'
+          properties:
+            unit:
+              type: string
+              default: Percent
+              x-refersTo: 'https://schema.org/unitText'
+            minValue:
+              type: number
+              format: float
+              default: 5
+              x-refersTo: 'https://schema.org/value'
+            maxValue:
+              type: number
+              format: float
+              default: 85
+              x-refersTo: 'https://schema.org/value'
+      xml:
+        name: ΗumProperty
+    SubscriptionRequestBody:
+      type: object
+      required:
+        - description
+        - type
+        - callbackUrl
+        - resource
+      properties:
+        name:
+          type: string
+          example: My subscription for DHT22 temperature
+        description:
+          type: string
+          example: A subscription to get info about DHT22 temperature
+        type:
+          type: string
+          example: webhook (callback)
+        callbackUrl:
+          type: string
+          example: 'http://172.16.1.5:5000/accumulate'
+        resource:
+          type: object
+          properties:
+            type:
+              type: string
+              example: property
+            name:
+              type: string
+              example: temperature
+        expires:
+          type: string
+          format: date-time
+        throttling:
+          type: integer
+          format: int32
+          example: 5
+      xml:
+        name: SubscriptionRequestBody
+    SubscriptionObject:
+      allOf:
+        - type: object
+          required:
+            - id
+            - type
+            - resource
+            - description
+            - callbackUrl
+          properties:
+            id:
+              type: string
+              example: 5fc978fc96cc26a4e202c3d6
+        - $ref: '#/components/schemas/SubscriptionRequestBody'
+      xml:
+        name: SubscriptionObject
+  parameters:
+    pageParam:
+      name: page
+      description: Pagination first (page) parameter
+      in: query
+      required: false
+      schema:
+        type: integer

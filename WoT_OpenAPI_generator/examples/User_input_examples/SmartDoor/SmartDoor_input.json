@@ -1,0 +1,71 @@
+{
+  "info": {
+    "title": "Web Thing Model API for Smart Door actuator",
+    "description": "This is a Web Thing Model server.  You can find\nout more about Web Thing Model (W3C) at\n[https://www.w3.org/Submission/wot-model/](https://www.w3.org/Submission/wot-model/).\n",
+    "contact": {
+      "email": "atzavaras@isc.tuc.gr"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Web Thing Model",
+    "url": "https://www.w3.org/Submission/wot-model/"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/DHT22",
+      "description": "SwaggerHub API Auto Mocking"
+    }
+  ],
+  "type_of_thing": "actuator",
+  "supported_properties": [ "state" ],
+  "supported_actions": [ "lock", "unlock" ],
+  "sub_support": "yes", 
+  "webthing_schema": {
+    "required": [
+      "id",
+      "name",
+      "type"
+    ],
+    "type": "object",
+    "x-refersTo": "http://www.w3.org/ns/sosa/Actuator",
+    "properties": {
+      "id": {
+        "type": "string",
+        "default": "SmartDoor",
+        "x-kindOf": "http://schema.org/identifier"
+      },
+      "name": {
+        "type": "string",
+        "example": "IoTSmartDoor",
+        "x-kindOf": "http://schema.org/name"
+      },
+      "description": {
+        "type": "string",
+        "example": "A Smart Door is an electronic door which can be sent commands to be locked or unlocked remotely. It can also report on its current state (OPEN, CLOSED or LOCKED).",
+        "x-refersTo": "http://schema.org/description"
+      },
+      "createdAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "updatedAt": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+            "type": "string",
+            "example": "smart door"
+        }
+      }
+    },
+    "xml": {
+      "name": "Webthing"
+    }
+    }
+}

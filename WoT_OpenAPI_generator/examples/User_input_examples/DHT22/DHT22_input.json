@@ -1,0 +1,26 @@
+{
+  "info": {
+    "title": "Web Thing Model API for DHT22 sensor",
+    "description": "This is a Web Thing Model server.  You can find\nout more about Web Thing Model (W3C) at\n[https://www.w3.org/Submission/wot-model/](https://www.w3.org/Submission/wot-model/).\n",
+    "contact": {
+      "email": "atzavaras@isc.tuc.gr"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Find out more about Web Thing Model",
+    "url": "https://www.w3.org/Submission/wot-model/"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/DHT22",
+      "description": "SwaggerHub API Auto Mocking"
+    }
+  ],
+  "type_of_thing": "sensor",
+  "supported_properties": [ "humidity", "temperature" ]
+}
