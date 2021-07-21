@@ -23,6 +23,7 @@ def infoObject(td, userInput, version):
   td['info'] = infoObject 
 
 
+
 ### API routes 
 
 # just for testing 
@@ -54,37 +55,11 @@ def create_oas():
     if servers: 
       td['servers'] = servers  # create servers array for the OpenAPI description 
 
-    # application configuration settings (security schemes)
-    securitySchemes = {
-      "api_key": {
-        "type": "apiKey",
-        "name": "api_key",
-        "in": "header"
-      },
-      "device_auth": {
-        "type": "oauth2",
-        "flows": {
-          "implicit": {
-            "authorizationUrl": "http://example.org/api/oauth/dialog",
-            "scopes": {
-              "write:state": "modify state of the device",
-              "read:state": "read smart door state"
-            }
-          }
-        }
-      }
-    }
+    # service security configuration settings (security schemes)
+    securitySchemes = req.get("security_Schemes") 
 
-    # application conf. settings (security requirements)
-    securityReqList = [
-      {},
-      {
-        "device_auth": [
-          "write:state",
-          "read:state"
-        ]
-      }
-    ]
+    # service security configuration settings (security requirements)
+    securityReqList = req.get("security_Req_List") 
 
     if externalDocs: 
       td['externalDocs'] = externalDocs
@@ -203,7 +178,7 @@ def create_oas():
 
     }
 
-    # properties definition 
+    # properties endpoints definition 
     for i in range(len(supported_properties)):
       device_property = supported_properties[i]
       retrieve_property_endpoint = {
@@ -252,6 +227,7 @@ def create_oas():
       }
 
       paths['/properties/'+device_property] = retrieve_property_endpoint
+
 
     # if the device is a sensor 
     if thing_type != 'actuator': 
@@ -469,6 +445,7 @@ def create_oas():
       #append /subscriptions endpoints and operations
       paths['/subscriptions/'] = subscriptions_endpoints
 
+      # define /{subscriptionID} endpoints 
       subscriptionID_endpoints = { 
 
         "get": {
@@ -544,7 +521,90 @@ def create_oas():
       }
 
       #append /subscriptions/{subscriptionID} endpoints and operations
-      paths['/subscriptions/{subscriptionID}'] = subscriptionID_endpoints
+      paths['/subscriptions/{subscriptionID}'] = subscriptionID_endpoints   
+
+      #define subscription schemas 
+      subscriptionRequestBody = {
+
+        "required": [
+          "description",
+          "type",
+          "callbackUrl",
+          "resource"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "My subscription for SmartDoor's current state"
+          },
+          "description": {
+            "type": "string",
+            "example": "A subscription to get info about SmartDoor's current state"
+          },
+          "type": {
+            "type": "string",
+            "example": "webhook (callback)"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "example": "http://172.16.1.5:5000/accumulate"
+          },
+          "resource": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "example": "property"
+              },
+              "name": {
+                "type": "string",
+                "example": "state"
+              }
+            }
+          },
+          "expires": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "throttling": {
+            "type": "integer",
+            "format": "int32",
+            "example": 5
+          }
+        },
+        "xml": {
+          "name": "SubscriptionRequestBody"
+        }
+      }
+
+      subscriptionObject = {
+
+        "allOf": [
+          {
+            "required": [
+              "id",
+              "type",
+              "resource",
+              "description",
+              "callbackUrl"
+            ],
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "5fc978fc96cc26a4e202c3d6"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/SubscriptionRequestBody"
+          }
+        ],
+        "xml": {
+          "name": "SubscriptionObject"
+        }
+      } 
 
     else:
       for i in range(len(tags)): # remove Subscriptions tag 
@@ -565,15 +625,33 @@ def create_oas():
 
     }
 
-    #append tags to the description 
+    # append tags to the description 
     td['tags'] = tags 
-    #append paths to the description 
+    # append paths to the description 
     td['paths'] = paths 
 
     webthing_schema = req.get("webthing_schema") # read Web Thing schema from user 
 
     schemas = {}
+
+    # append Webthing Schema object to schemas 
     schemas['Webthing'] = webthing_schema
+
+    # properties schemas definition 
+    for i in range(len(supported_properties)):
+      device_property = supported_properties[i]
+      
+      # read schemas from user input 
+      device_property_measurement_schema = req.get(""+device_property+"MeasurementSchema")
+      device_property_schema = req.get(""+device_property+"Schema")
+      
+      # append two property Schema objects to schemas
+      schemas[''+device_property+''] = device_property_measurement_schema
+      schemas[''+device_property+'Property'] = device_property_schema 
+
+    # append subscription Schema objects to schemas 
+    schemas['SubscriptionRequestBody'] = subscriptionRequestBody
+    schemas['SubscriptionObject'] = subscriptionObject
     
     componentsObject = {} # initialize Components object
     componentsObject['schemas'] = schemas
