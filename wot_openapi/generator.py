@@ -4,9 +4,8 @@ import string
 import logging
 import sys
 import requests
-from random import randrange
 from markupsafe import escape
-from datetime import datetime 
+
 
 app = Flask(__name__) # create an app instance
 logging.basicConfig(level=logging.DEBUG)   
@@ -45,7 +44,7 @@ def create_oas():
     td = {}
     td['openapi'] = "3.0.3"
 
-    version = "1.0.0" # application configuration settings (document version)
+    version = req.get("version") # application configuration settings (document version)
     infoObject(td, req, version) # create infoObject for the OpenAPI description 
 
     # Get Servers, ExternalDocs data from user input 
