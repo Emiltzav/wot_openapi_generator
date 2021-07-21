@@ -366,6 +366,30 @@ def create_oas():
 
         paths['/actions/'+device_action+'/{executionId}'] = retrieve_action_status_endpoint
 
+      # define general /actions schema 
+      action_schema = {
+
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "lock"
+          },
+          "name": {
+            "type": "string",
+            "example": "Lock the Smart Door"
+          }
+        },
+        "xml": {
+          "name": "Action"
+        }
+        
+      }  
+
     if sub_support=='yes':
 
       subscriptions_endpoints = {
@@ -648,6 +672,12 @@ def create_oas():
       schemas[''+device_property+''] = device_property_measurement_schema
       schemas[''+device_property+'Property'] = device_property_schema 
 
+    # actions schemas definition 
+    schemas['Action'] = action_schema # append general /actions schema to schemas   
+
+    action_execution_schema = req.get("action_execution_schema") # read action execution schema from user input 
+    schemas['ActionExecution'] = action_execution_schema
+    
     # append subscription Schema objects to schemas 
     schemas['SubscriptionRequestBody'] = subscriptionRequestBody
     schemas['SubscriptionObject'] = subscriptionObject
