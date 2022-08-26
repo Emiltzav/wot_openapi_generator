@@ -1,0 +1,919 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "OpenAPI Thing description for Smart Door 4",
+        "description": "This is an OpenAPI Description of a Smart Door actuator for the Web of Things.\n",
+        "contact": {
+            "email": "atzavaras@isc.tuc.gr"
+        },
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:5000/MyDoor4",
+            "description": "Smart door service endpoint"
+        }
+    ],
+    "security": [],
+    "tags": [
+        {
+            "name": "Web Thing",
+            "x-onResource": "'#/components/schemas/Webthing'",
+            "description": "Operations on a Web Thing",
+            "externalDocs": {
+                "description": "Find out more",
+                "url": "https://www.w3.org/Submission/wot-model/#web-thing-resource"
+            }
+        },
+        {
+            "name": "Properties",
+            "description": "Operations on Thing Properties",
+            "externalDocs": {
+                "description": "Find out more about Thing properties",
+                "url": "https://www.w3.org/Submission/wot-model/#properties-resource"
+            }
+        },
+        {
+            "name": "Actions",
+            "description": "Operations on Thing Actions",
+            "externalDocs": {
+                "description": "Find out more about Thing Actions",
+                "url": "https://www.w3.org/Submission/wot-model/#actions-resource"
+            }
+        },
+        {
+            "name": "Subscriptions",
+            "x-onResource": "'#/components/schemas/SubscriptionObject'",
+            "description": "Operations on subscriptions",
+            "externalDocs": {
+                "description": "Find out more about subscriptions",
+                "url": "https://www.w3.org/Submission/wot-model/#things-resource"
+            }
+        }
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "Web Thing"
+                ],
+                "summary": "Retrieve Web Thing",
+                "description": "In response to an HTTP GET request on the root URL of a Thing, an Extended Web Thing must return an object that holds its representation.",
+                "operationId": "retrieveWebThing",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Webthing"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/properties": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Retrieve a list of properties",
+                "description": "In response to an HTTP GET request on the destination URL of a properties link, an Extended Web Thing must return an array of Property that the initial resource contains.",
+                "operationId": "retrieveWebThingProperties",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PropertiesResponse"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/properties/state": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Retrieve the value of a property (state)",
+                "description": "In response to an HTTP GET request on a Property URL, an Extended Web Thing must return an array that lists recent values of that Property.",
+                "operationId": "retrieveStateProperty",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/pageParam"
+                    },
+                    {
+                        "name": "perPage",
+                        "description": "Pagination second (per page) parameter",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/State"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/properties/temperature": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Retrieve the value of a property (temperature)",
+                "description": "In response to an HTTP GET request on a Property URL, an Extended Web Thing must return an array that lists recent values of that Property.",
+                "operationId": "retrieveTemperatureProperty",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/pageParam"
+                    },
+                    {
+                        "name": "perPage",
+                        "description": "Pagination second (per page) parameter",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Temperature"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/actions/lock": {
+            "get": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Retrieve recent executions of the lock action",
+                "description": "In response to an HTTP GET request on an Action URL, an Extended Web Thing must return an array that lists the recent executions of a specific Action.",
+                "operationId": "retrieveRecentExecutionsOfLockAction",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ActionExecution"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Execute a lock action",
+                "description": "In response to an HTTP POST request on an Action URL with valid parameters as request body, an Extended Web Thing must either reject the request with the appropriate status code or queue a task to run the action and return the status of that action in a 201 Created response. The action may not run immediately. The Location HTTP header identifies the URL to use to retrieve the most recent update on the action's status.",
+                "operationId": "executeLockAction",
+                "responses": {
+                    "204": {
+                        "description": "NO RESPONSE"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/actions/lock/{executionId}": {
+            "get": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Retrieve the status of a lock action",
+                "description": "In response to an HTTP GET request on the URL targeted by the Location HTTP header returned in response to the request to execute an action, an Extended Web Thing must return the status of this action or a 404 Not Found status code if the action's status is no longer available.",
+                "parameters": [
+                    {
+                        "name": "executionId",
+                        "in": "path",
+                        "description": "action execution of Webthing to return",
+                        "required": true,
+                        "style": "simple",
+                        "explode": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer",
+                                "format": "int64",
+                                "default": 1
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ActionExecution"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/actions/unlock": {
+            "get": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Retrieve recent executions of the unlock action",
+                "description": "In response to an HTTP GET request on an Action URL, an Extended Web Thing must return an array that lists the recent executions of a specific Action.",
+                "operationId": "retrieveRecentExecutionsOfUnlockAction",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ActionExecution"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Execute an unlock action",
+                "description": "In response to an HTTP POST request on an Action URL with valid parameters as request body, an Extended Web Thing must either reject the request with the appropriate status code or queue a task to run the action and return the status of that action in a 201 Created response. The action may not run immediately. The Location HTTP header identifies the URL to use to retrieve the most recent update on the action's status.",
+                "operationId": "executeUnlockAction",
+                "responses": {
+                    "204": {
+                        "description": "NO RESPONSE"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/actions/unlock/{executionId}": {
+            "get": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Retrieve the status of an unlock action",
+                "description": "In response to an HTTP GET request on the URL targeted by the Location HTTP header returned in response to the request to execute an action, an Extended Web Thing must return the status of this action or a 404 Not Found status code if the action's status is no longer available.",
+                "parameters": [
+                    {
+                        "name": "executionId",
+                        "in": "path",
+                        "description": "action execution of Webthing to return",
+                        "required": true,
+                        "style": "simple",
+                        "explode": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer",
+                                "format": "int64",
+                                "default": 1
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ActionExecution"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/actions/": {
+            "get": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Retrieve a list of actions",
+                "operationId": "retrieveWebThingActions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ActionsResponse"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/actions/open": {
+            "get": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Retrieve recent executions of the open action",
+                "description": "In response to an HTTP GET request on an Action URL, an Extended Web Thing must return an array that lists the recent executions of a specific Action.",
+                "operationId": "retrieveRecentExecutionsOfOpenAction",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ActionExecution"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Execute a(n) open action",
+                "description": "In response to an HTTP POST request on an Action URL with valid parameters as request body, an Extended Web Thing must either reject the request with the appropriate status code or queue a task to run the action and return the status of that action in a 201 Created response. The action may not run immediately. The Location HTTP header identifies the URL to use to retrieve the most recent update on the action's status.",
+                "operationId": "executeopenAction",
+                "responses": {
+                    "204": {
+                        "description": "NO RESPONSE"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/actions/open/{executionId}": {
+            "get": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Retrieve the status of a(n) open action",
+                "description": "In response to an HTTP GET request on the URL targeted by the Location HTTP header returned in response to the request to execute an action, an Extended Web Thing must return the status of this action or a 404 Not Found status code if the action's status is no longer available.",
+                "parameters": [
+                    {
+                        "name": "executionId",
+                        "in": "path",
+                        "description": "action execution of Webthing to return",
+                        "required": true,
+                        "style": "simple",
+                        "explode": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer",
+                                "format": "int64",
+                                "default": 1
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ActionExecution"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/subscriptions/": {
+            "get": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Retrieve a list of subscriptions",
+                "description": "In response to an HTTP GET request on the destination URL of a subscriptions link, an Extended Web Thing must return the array of subscriptions to the underlying resource.",
+                "operationId": "retrieveListOfSubscriptions",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/pageParam"
+                    },
+                    {
+                        "name": "perPage",
+                        "description": "Pagination second (per page) parameter",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SubscriptionObject"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Create a subscription",
+                "description": "An Extended Web Thing should support subscriptions for the specific resource (DHT22).",
+                "operationId": "createSubscription",
+                "x-operationType": "https://schema.org/CreateAction",
+                "requestBody": {
+                    "description": "Create a new subscription",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubscriptionRequestBody"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/subscriptions/{subscriptionID}": {
+            "get": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Retrieve information about a specific subscription",
+                "description": "In response to an HTTP GET request on a Subscription URL, an Extended Web Thing must return a JSON representation of the subscription. The JSON representation should be the same as the one returned for that subscription in 'Retrieve a list of subscriptions'.",
+                "operationId": "retreiveInfoAboutSubscription",
+                "parameters": [
+                    {
+                        "name": "subscriptionID",
+                        "in": "path",
+                        "description": "The id of the specific subscription",
+                        "required": true,
+                        "style": "simple",
+                        "explode": true,
+                        "x-mapsTo": "#/components/schemas/SubscriptionObject.id",
+                        "schema": {
+                            "type": "string",
+                            "example": "5fd23faccde6be05da68bcfb"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubscriptionObject"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Delete a subscription",
+                "description": "In response to an HTTP DELETE request on the destination URL of a subscriptions an Extended Web Thing must either reject  the request with an appropriate status code or remove (unsubscribe) the subscription and return a 200 OK status code.",
+                "operationId": "deleteSubscription",
+                "x-operationType": "https://schema.org/DeleteAction",
+                "parameters": [
+                    {
+                        "name": "subscriptionID",
+                        "in": "path",
+                        "description": "The id of the specific subscription",
+                        "required": true,
+                        "style": "simple",
+                        "explode": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "5fd23faccde6be05da68bcfb"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Webthing": {
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "type": "object",
+                "x-refersTo": "http://www.w3.org/ns/sosa/Actuator",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "default": "SmartDoor",
+                        "x-kindOf": "http://schema.org/identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "IoTSmartDoor",
+                        "x-kindOf": "http://schema.org/name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "A Smart Door is an electronic door which can be sent commands to be locked or unlocked remotely. It can also report on its current state (OPEN, CLOSED or LOCKED).",
+                        "x-refersTo": "http://schema.org/description"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "smart door"
+                        }
+                    }
+                },
+                "xml": {
+                    "name": "Webthing"
+                }
+            },
+            "PropertiesResponse": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/StateProperty"
+                    },
+                    {
+                        "$ref": "#/components/schemas/TemperatureProperty"
+                    }
+                ],
+                "xml": {
+                    "name": "PropertiesResponse"
+                }
+            },
+            "State": {
+                "type": "object",
+                "x-kindOf": "http://www.w3.org/ns/sosa/Observation",
+                "properties": {
+                    "state": {
+                        "type": "string",
+                        "x-kindOf": "http://www.w3.org/ns/sosa/hasSimpleResult",
+                        "enum": [
+                            "OPEN",
+                            "CLOSED",
+                            "LOCKED"
+                        ]
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "x-kindOf": "http://www.w3.org/ns/sosa/resultTime"
+                    }
+                },
+                "xml": {
+                    "name": "State"
+                }
+            },
+            "StateProperty": {
+                "required": [
+                    "id",
+                    "values"
+                ],
+                "x-kindOf": "http://www.w3.org/ns/ssn/systems/SystemCapability",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "default": "state",
+                        "x-kindOf": "http://schema.org/identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Smart door's current state",
+                        "x-kindOf": "http://schema.org/name"
+                    },
+                    "values": {
+                        "$ref": "#/components/schemas/State"
+                    }
+                },
+                "xml": {
+                    "name": "StateProperty"
+                }
+            },
+            "Temperature": {
+                "type": "object",
+                "x-kindOf": "http://www.w3.org/ns/sosa/Observation",
+                "properties": {
+                    "temperature": {
+                        "type": "string",
+                        "x-kindOf": "http://www.w3.org/ns/sosa/hasSimpleResult"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "x-kindOf": "http://www.w3.org/ns/sosa/resultTime"
+                    }
+                },
+                "xml": {
+                    "name": "Temperature"
+                }
+            },
+            "TemperatureProperty": {
+                "required": [
+                    "id",
+                    "values"
+                ],
+                "x-kindOf": "http://www.w3.org/ns/ssn/systems/SystemCapability",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "default": "state",
+                        "x-kindOf": "http://schema.org/identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Smart door's current temperature",
+                        "x-kindOf": "http://schema.org/name"
+                    },
+                    "values": {
+                        "$ref": "#/components/schemas/Temperature"
+                    }
+                },
+                "xml": {
+                    "name": "TemperatureProperty"
+                }
+            },
+            "ActionsResponse": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/Action"
+                    }
+                ],
+                "xml": {
+                    "name": "ActionsResponse"
+                }
+            },
+            "Action": {
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "lock"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Lock the Smart Door"
+                    }
+                },
+                "xml": {
+                    "name": "Action"
+                }
+            },
+            "ActionExecution": {
+                "required": [
+                    "id",
+                    "status",
+                    "timestamp"
+                ],
+                "x-kindOf": "http://www.w3.org/ns/sosa/Actuation",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "223"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "completed"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "xml": {
+                    "name": "ActionExecution"
+                }
+            },
+            "SubscriptionRequestBody": {
+                "required": [
+                    "description",
+                    "type",
+                    "callbackUrl",
+                    "resource"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "My subscription for SmartDoor's current state"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "A subscription to get info about SmartDoor's current state"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "webhook (callback)"
+                    },
+                    "callbackUrl": {
+                        "type": "string",
+                        "example": "http://172.16.1.5:5000/accumulate"
+                    },
+                    "resource": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "example": "property"
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "state"
+                            }
+                        }
+                    },
+                    "expires": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "throttling": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 5
+                    }
+                },
+                "xml": {
+                    "name": "SubscriptionRequestBody"
+                }
+            },
+            "SubscriptionObject": {
+                "allOf": [
+                    {
+                        "required": [
+                            "id",
+                            "type",
+                            "resource",
+                            "description",
+                            "callbackUrl"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "example": "5fc978fc96cc26a4e202c3d6"
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/schemas/SubscriptionRequestBody"
+                    }
+                ],
+                "xml": {
+                    "name": "SubscriptionObject"
+                }
+            }
+        },
+        "parameters": {
+            "pageParam": {
+                "name": "page",
+                "description": "Pagination first (page) parameter",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        },
+        "securitySchemes": {}
+    }
+}

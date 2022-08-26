@@ -1,0 +1,7 @@
+version: "2"
+services:
+
+  wotopenapi:
+    build: ./wot_openapi/
+    ports:
+      - 5001:5000
